@@ -3,162 +3,160 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
 	"os"
+	"path/filepath"
+	"strconv"
 
 	"github.com/HouzuoGuo/tiedot/db"
-	"github.com/HouzuoGuo/tiedot/dberr"
+	"github.com/gin-gonic/gin"
 )
 
-/*
-In embedded usage, you are encouraged to use all public functions concurrently.
-However please do not use public functions in "data" package by yourself - you most likely will not need to use them directly.
+var (
+	jsondb *db.DB
+	col    *db.Col
+)
 
-To compile and run the example:
-    go build && ./tiedot -mode=example
-
-It may require as much as 1.5GB of free disk space in order to run the example.
-*/
+const (
+	dbname = "db"
+	clname = "jaguar"
+)
 
 func main() {
-	// ****************** Collection Management ******************
 
-	myDBDir := "./mydb"
-	os.RemoveAll(myDBDir)
-	defer os.RemoveAll(myDBDir)
-
-	// (Create if not exist) open a database
-	myDB, err := db.OpenDB(myDBDir)
+	jsondb, err := db.OpenDB(dbname)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+	}
+	defer jsondb.Close()
+
+	if _, err = os.Stat(filepath.Join(dbname, clname)); os.IsNotExist(err) {
+		if err = jsondb.Create(clname); err != nil {
+			panic(err)
+		}
+	}
+	col = jsondb.Use(clname)
+
+	r := gin.Default()
+	r.GET("/", GetPeople)
+	r.GET("/:id", Get)
+	r.POST("/", Create)
+	r.PATCH("/:id", Append)
+	r.PUT("/:id", Update)
+	r.DELETE("/:id", Delete)
+
+	r.Run(":8080")
+}
+
+// Delete deletes record by id
+func Delete(c *gin.Context) {
+	id := c.Params.ByName("id")
+	uid, _ := strconv.Atoi(id)
+	col.Delete(uid)
+
+	c.JSON(200, gin.H{"id #" + id: "deleted"})
+}
+
+// Update updates record by id
+func Update(c *gin.Context) {
+
+	var record map[string]interface{}
+	id := c.Params.ByName("id")
+
+	uid, _ := strconv.Atoi(id)
+
+	var err error
+	if _, err = col.Read(uid); err != nil {
+		c.AbortWithStatus(404)
+		fmt.Println(err)
 	}
 
-	// Create two collections: Feeds and Votes
-	if err := myDB.Create("Feeds"); err != nil {
-		panic(err)
-	}
-	if err := myDB.Create("Votes"); err != nil {
-		panic(err)
-	}
+	c.BindJSON(&record)
 
-	// What collections do I now have?
-	for _, name := range myDB.AllCols() {
-		fmt.Printf("I have a collection called %s\n", name)
-	}
-
-	// Rename collection "Votes" to "Points"
-	if err := myDB.Rename("Votes", "Points"); err != nil {
-		panic(err)
-	}
-
-	// Drop (delete) collection "Points"
-	if err := myDB.Drop("Points"); err != nil {
-		panic(err)
-	}
-
-	// Scrub (repair and compact) "Feeds"
-	if err := myDB.Scrub("Feeds"); err != nil {
-		panic(err)
-	}
-
-	// ****************** Document Management ******************
-
-	// Start using a collection (the reference is valid until DB schema changes or Scrub is carried out)
-	feeds := myDB.Use("Feeds")
-
-	// Insert document (afterwards the docID uniquely identifies the document and will never change)
-	docID, err := feeds.Insert(map[string]interface{}{
-		"name": "Go 1.2 is released",
-		"url":  "golang.org"})
+	err = col.Update(uid, record)
 	if err != nil {
-		panic(err)
+		c.AbortWithStatus(http.StatusBadRequest)
+		log.Println("Unable to update data")
 	}
 
-	// Read document
-	readBack, err := feeds.Read(docID)
+	c.JSON(200, record)
+
+}
+
+// Append updates record by id
+func Append(c *gin.Context) {
+
+	id := c.Params.ByName("id")
+
+	uid, _ := strconv.Atoi(id)
+
+	var readBack map[string]interface{}
+	var err error
+	if readBack, err = col.Read(uid); err != nil {
+		c.AbortWithStatus(404)
+		fmt.Println(err)
+	}
+
+	c.BindJSON(&readBack)
+
+	err = col.Update(uid, readBack)
 	if err != nil {
-		panic(err)
+		c.AbortWithStatus(http.StatusBadRequest)
+		log.Println("Unable to update data")
 	}
-	fmt.Println("Document", docID, "is", readBack)
 
-	// Update document
-	err = feeds.Update(docID, map[string]interface{}{
-		"name": "Go is very popular",
-		"url":  "google.com"})
+	c.JSON(200, readBack)
+
+}
+
+// Create adds record to db
+func Create(c *gin.Context) {
+
+	var record map[string]interface{}
+	c.BindJSON(&record)
+
+	docID, err := col.Insert(record)
 	if err != nil {
-		panic(err)
+		c.AbortWithStatus(404)
+		fmt.Println(err)
 	}
 
-	// Process all documents (note that document order is undetermined)
-	feeds.ForEachDoc(func(id int, docContent []byte) (willMoveOn bool) {
-		fmt.Println("Document", id, "is", string(docContent))
-		return true  // move on to the next document OR
-		return false // do not move on to the next document
+	fmt.Println("docId", docID)
+
+	c.JSON(200, docID)
+}
+
+// Get returns specific record by id
+func Get(c *gin.Context) {
+	id := c.Params.ByName("id")
+
+	uid, _ := strconv.Atoi(id)
+
+	var readBack map[string]interface{}
+	var err error
+	if readBack, err = col.Read(uid); err != nil {
+		c.AbortWithStatus(404)
+		fmt.Println(err)
+	}
+	fmt.Println("read data", readBack)
+
+	c.JSON(200, readBack)
+
+}
+
+// GetPeople returns all records
+func GetPeople(c *gin.Context) {
+
+	rec := make([]map[string]interface{}, 0)
+
+	col.ForEachDoc(func(id int, doc []byte) bool {
+		var entry map[string]interface{}
+		json.Unmarshal(doc, &entry)
+		entry["id"] = string(strconv.AppendInt(nil, int64(id), 10))
+		rec = append(rec, entry)
+		return true
 	})
 
-	// Delete document
-	if err := feeds.Delete(docID); err != nil {
-		panic(err)
-	}
-
-	// More complicated error handing - identify the error Type.
-	// In this example, the error code tells that the document no longer exists.
-	if err := feeds.Delete(docID); dberr.Type(err) == dberr.ErrorNoDoc {
-		fmt.Println("The document was already deleted")
-	}
-
-	// ****************** Index Management ******************
-	// Indexes assist in many types of queries
-	// Create index (path leads to document JSON attribute)
-	if err := feeds.Index([]string{"author", "name", "first_name"}); err != nil {
-		panic(err)
-	}
-	if err := feeds.Index([]string{"Title"}); err != nil {
-		panic(err)
-	}
-	if err := feeds.Index([]string{"Source"}); err != nil {
-		panic(err)
-	}
-
-	// What indexes do I have on collection A?
-	for _, path := range feeds.AllIndexes() {
-		fmt.Printf("I have an index on path %v\n", path)
-	}
-
-	// Remove index
-	if err := feeds.Unindex([]string{"author", "name", "first_name"}); err != nil {
-		panic(err)
-	}
-
-	// ****************** Queries ******************
-	// Prepare some documents for the query
-	feeds.Insert(map[string]interface{}{"Title": "New Go release", "Source": "golang.org", "Age": 3})
-	feeds.Insert(map[string]interface{}{"Title": "Kitkat is here", "Source": "google.com", "Age": 2})
-	feeds.Insert(map[string]interface{}{"Title": "Good Slackware", "Source": "slackware.com", "Age": 1})
-
-	var query interface{}
-	json.Unmarshal([]byte(`[{"eq": "New Go release", "in": ["Title"]}, {"eq": "slackware.com", "in": ["Source"]}]`), &query)
-
-	queryResult := make(map[int]struct{}) // query result (document IDs) goes into map keys
-
-	if err := db.EvalQuery(query, feeds, &queryResult); err != nil {
-		panic(err)
-	}
-
-	// Query result are document IDs
-	for id := range queryResult {
-		// To get query result document, simply read it
-		readBack, err := feeds.Read(id)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Printf("Query returned document %v\n", readBack)
-	}
-
-	/*
-		// Gracefully close database
-		if err := myDB.Close(); err != nil {
-			panic(err)
-		}
-	*/
-
+	c.JSON(200, rec)
 }
