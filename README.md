@@ -1,5 +1,5 @@
 # Jaguar
-CRUD mock server
+superfast, easy to use mock server
 ------
 
 Free and open source (MIT license) mock server with built-in persistent storage (database) with out-of-the-box Create, Read, Update and Delete functionality.
