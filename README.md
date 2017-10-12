@@ -48,6 +48,7 @@ If it finds record with that id, it will be deleted.
 Accepts an array of ids in a payload of the body of the request. For each record, if found in the database it will be deleted. Useful for a large number of records at once and for testing that functionality from client side if it is implemented.
 
 ## Download
+Binary file with latest version compiled for your system can be downloaded from [releases page](https://github.com/vsrc/jaguar/releases)
 
 ## Technology used
 
