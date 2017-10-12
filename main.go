@@ -17,6 +17,7 @@ import (
 var (
 	jsondb *db.DB
 	col    *db.Col
+	conf   map[string]interface{}
 )
 
 const (
@@ -44,12 +45,11 @@ func main() {
 		panic(err)
 	}
 
-	var conf map[string]interface{}
 	json.Unmarshal(read, &conf)
 
 	r := gin.Default()
-	r.GET("/", GetPeople)
-	r.GET("/:id", Get)
+	r.GET("/", Get)
+	r.GET("/:id", GetOne)
 	r.POST("/", Create)
 	r.POST("/bulk", BulkCreate)
 	r.PATCH("/:id", Append)
@@ -192,8 +192,8 @@ func BulkCreate(c *gin.Context) {
 	c.JSON(200, strconv.Itoa(count)+" records saved")
 }
 
-// Get returns specific record by id
-func Get(c *gin.Context) {
+// GetOne returns specific record by id
+func GetOne(c *gin.Context) {
 	id := c.Params.ByName("id")
 
 	uid, _ := strconv.Atoi(id)
@@ -210,16 +210,46 @@ func Get(c *gin.Context) {
 
 }
 
-// GetPeople returns all records
-func GetPeople(c *gin.Context) {
+// Get returns all records
+func Get(c *gin.Context) {
+
+	limit := int(conf["limit"].(float64))
+	offset := 0
+	qp := c.Request.URL.Query()
+
+	if len(qp["limit"]) > 0 {
+		l, err := strconv.Atoi(qp["limit"][0])
+
+		if err == nil {
+			limit = l
+		}
+	}
+
+	if len(qp["offset"]) > 0 {
+		o, err := strconv.Atoi(qp["offset"][0])
+
+		if err == nil {
+			offset = o
+		}
+	}
+
+	log.Println("limit is: " + strconv.Itoa(limit))
+	log.Println("offset is: " + strconv.Itoa(offset))
 
 	rec := make([]map[string]interface{}, 0)
 
+	i := 0
 	col.ForEachDoc(func(id int, doc []byte) bool {
-		var entry map[string]interface{}
-		json.Unmarshal(doc, &entry)
-		entry["id"] = string(strconv.AppendInt(nil, int64(id), 10))
-		rec = append(rec, entry)
+		i++
+
+		if i > offset && i <= (offset+limit) {
+
+			var entry map[string]interface{}
+			json.Unmarshal(doc, &entry)
+			entry["id"] = string(strconv.AppendInt(nil, int64(id), 10))
+			rec = append(rec, entry)
+			return true
+		}
 		return true
 	})
 
