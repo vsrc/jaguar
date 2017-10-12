@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -38,6 +39,14 @@ func main() {
 	}
 	col = jsondb.Use(clname)
 
+	read, err := ioutil.ReadFile("conf.json")
+	if err != nil {
+		panic(err)
+	}
+
+	var conf map[string]interface{}
+	json.Unmarshal(read, &conf)
+
 	r := gin.Default()
 	r.GET("/", GetPeople)
 	r.GET("/:id", Get)
@@ -46,7 +55,7 @@ func main() {
 	r.PUT("/:id", Update)
 	r.DELETE("/:id", Delete)
 
-	r.Run(":8080")
+	r.Run(":" + conf["port"].(string))
 }
 
 // Delete deletes record by id
