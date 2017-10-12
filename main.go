@@ -74,13 +74,13 @@ func BulkDelete(c *gin.Context) {
 	}
 	defer c.Request.Body.Close()
 
-	log.Println(records)
-
+	counter := 0
 	for i := 0; i < len(records); i++ {
 		col.Delete(records[i])
+		counter = counter + 1
 	}
 
-	c.JSON(200, "records deleted")
+	c.JSON(200, strconv.Itoa(counter)+" records deleted")
 }
 
 // Delete deletes record by id
@@ -176,20 +176,20 @@ func BulkCreate(c *gin.Context) {
 	}
 	defer c.Request.Body.Close()
 
-	log.Println(records)
+	count := 0
 
 	for i := 0; i < len(records); i++ {
 
-		docID, err := col.Insert(records[i])
+		_, err := col.Insert(records[i])
 		if err != nil {
 			c.AbortWithStatus(404)
 			fmt.Println(err)
 		}
 
-		fmt.Println("docId", docID)
+		count = count + 1
 	}
 
-	c.JSON(200, records)
+	c.JSON(200, strconv.Itoa(count)+" records saved")
 }
 
 // Get returns specific record by id
