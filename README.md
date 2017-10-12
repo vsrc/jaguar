@@ -2,7 +2,15 @@
 superfast, easy to use mock server
 ------
 
-Free and open source (MIT license) mock server with built-in persistent storage (database) with out-of-the-box Create, Read, Update and Delete functionality.
+Have you ever tried to implement front-end feature only to find out that back-end team haven’t implemented it yet? Have you ever tried to test performance of your client side software only to find out your database have only 3 records and your DBA is on vacation for next 14 days?
+
+Meet Jaguar - free and open source (MIT license) mock server with out-of-the-box Create, Read, Update and Delete functionality.
+
+But wait! There is more! If you download now, you will also get:
+
+## Built-in zero setup database without structure 
+
+Since underlying database is NoSql type of database, there is no need to do any database tables/structure setup. It accepts any data as long as it is in JSON format.
 
 ## Purpose
 
@@ -16,6 +24,40 @@ Ideally, we need something that will be:
 - faaaaast
 
 This is where Jaguar kicks in.
+
+### Example 1
+
+Your back-end provides response on endpoint `/hero` like this:
+```json
+{
+  "alias": "Batman",
+  "name": "Bruce"
+}
+```
+But you need urgently implment in your web and mobile app surname as well. Back-end developer left for a lunch and won't be back for at least 2 hours. What will you do?
+
+1. Run jaguar
+2. Do a post request
+  ```json
+    {
+      "alias": "Batman",
+      "name": "Bruce",
+      "surname": "Wayne"
+    }
+  ```
+3. Do a get request and be ready to be served with your data while your back-end friend is stil waiting waiter to pick up his lunch order.
+
+### Example 2
+
+Your back-end developer returned from lunch but he went now to get a coffee. He won't be back for at least 45 minutes. You need to test your web/mobile app performance with large amount of data. Your database have only three records. What will you do?
+
+1. Copy those three results
+2. Paste them into your favorite or at least 2nd favorite text editor
+3. Continue pasting until in front of your eyes 3 objects becomes 6, 6 becomes 12, 12 becomes 24...
+4. Once happy copy all objects
+5. Run Jaguar
+6. Do a post request on /bulk endpoint with all your copied objects
+7. Do a get request and be ready to be served with your data while your back-end friend is still explaing to the waiter how to write his name on a coffee cup
 
 ## Features
 
