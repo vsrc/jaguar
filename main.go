@@ -54,9 +54,33 @@ func main() {
 	r.POST("/bulk", BulkCreate)
 	r.PATCH("/:id", Append)
 	r.PUT("/:id", Update)
-	r.DELETE("/:id", Delete)
+	r.DELETE("/bulk", BulkDelete)
+	r.DELETE("/single/:id", Delete)
 
 	r.Run(":" + conf["port"].(string))
+}
+
+// BulkDelete deletes record by id
+func BulkDelete(c *gin.Context) {
+
+	decoder := json.NewDecoder(c.Request.Body)
+
+	var records []int
+
+	err := decoder.Decode(&records)
+	if err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		log.Println(err)
+	}
+	defer c.Request.Body.Close()
+
+	log.Println(records)
+
+	for i := 0; i < len(records); i++ {
+		col.Delete(records[i])
+	}
+
+	c.JSON(200, "records deleted")
 }
 
 // Delete deletes record by id
