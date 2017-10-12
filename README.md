@@ -45,19 +45,19 @@ But you need urgently implment in your web and mobile app surname as well. Back-
       "surname": "Wayne"
     }
   ```
-3. Do a get request and be ready to be served with your data while your back-end friend is stil waiting waiter to pick up his lunch order.
+3. Do a get request and be ready to be served with your data while your back-end friend is stil waiting waiter to pick up his/her/their lunch order.
 
 ### Example 2
 
-Your back-end developer returned from lunch but he went now to get a coffee. He won't be back for at least 45 minutes. You need to test your web/mobile app performance with large amount of data. Your database have only three records. What will you do?
+Your back-end developer returned from lunch but he/she/they went now to get a coffee. He/she/they won't be back for at least 45 minutes. You need to test your web/mobile app performance with large amount of data. Your database have only three records. What will you do?
 
-1. Copy those three results
+1. Copy those 3 results
 2. Paste them into your favorite or at least 2nd favorite text editor
 3. Continue pasting until in front of your eyes 3 objects becomes 6, 6 becomes 12, 12 becomes 24...
-4. Once happy copy all objects
+4. Once you are happy, copy all objects
 5. Run Jaguar
 6. Do a post request on /bulk endpoint with all your copied objects
-7. Do a get request and be ready to be served with your data while your back-end friend is still explaing to the waiter how to write his name on a coffee cup
+7. Do a get request and be ready to be served with your data while your back-end friend is still explaing to the waiter how to write his/her/their name on a coffee cup
 
 ## Features
 
@@ -89,8 +89,20 @@ If it finds record with that id, it will be deleted.
 #### [DELETE] /bulk
 Accepts an array of ids in a payload of the body of the request. For each record, if found in the database it will be deleted. Useful for a large number of records at once and for testing that functionality from client side if it is implemented.
 
+## Can I use it for more permanent purposes?
+Like as a backend for a website, blog, or my app? 
+
+Probably yes. But since this project is done in a few hours there is not guarantee how it will behave in more permanent role.
+
 ## Download
 Binary file with latest version compiled for your system can be downloaded from [releases page](https://github.com/vsrc/jaguar/releases)
+
+## Who is using this project?
+- me
+
+_(end of list)_
+
+If you would like to be mentioned here, let me know. :)
 
 ## Technology used
 
