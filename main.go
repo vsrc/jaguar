@@ -51,6 +51,7 @@ func main() {
 	r.GET("/", GetPeople)
 	r.GET("/:id", Get)
 	r.POST("/", Create)
+	r.POST("/bulk", BulkCreate)
 	r.PATCH("/:id", Append)
 	r.PUT("/:id", Update)
 	r.DELETE("/:id", Delete)
@@ -127,13 +128,44 @@ func Create(c *gin.Context) {
 
 	docID, err := col.Insert(record)
 	if err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusInternalServerError)
 		fmt.Println(err)
 	}
 
 	fmt.Println("docId", docID)
 
-	c.JSON(200, docID)
+	c.JSON(200, record)
+}
+
+// BulkCreate adds multiple records to db
+func BulkCreate(c *gin.Context) {
+
+	type Record map[string]interface{}
+	decoder := json.NewDecoder(c.Request.Body)
+
+	var records []Record
+
+	err := decoder.Decode(&records)
+	if err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		log.Println(err)
+	}
+	defer c.Request.Body.Close()
+
+	log.Println(records)
+
+	for i := 0; i < len(records); i++ {
+
+		docID, err := col.Insert(records[i])
+		if err != nil {
+			c.AbortWithStatus(404)
+			fmt.Println(err)
+		}
+
+		fmt.Println("docId", docID)
+	}
+
+	c.JSON(200, records)
 }
 
 // Get returns specific record by id
