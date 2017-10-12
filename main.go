@@ -154,8 +154,11 @@ func main() {
 		fmt.Printf("Query returned document %v\n", readBack)
 	}
 
-	// Gracefully close database
-	if err := myDB.Close(); err != nil {
-		panic(err)
-	}
+	/*
+		// Gracefully close database
+		if err := myDB.Close(); err != nil {
+			panic(err)
+		}
+	*/
+
 }

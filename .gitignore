@@ -1,2 +1,5 @@
 jaguar
+jaguar.exe
+db/
 *.db
+.DS_Store
