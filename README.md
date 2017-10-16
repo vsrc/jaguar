@@ -45,7 +45,7 @@ But you need urgently implement in your web and mobile app surname as well. Back
       "surname": "Wayne"
     }
   ```
-3. Do a get request and be ready to be served with your data while your back-end friend is still waiting for a waiter to pick up his/her/their lunch order.
+3. Do a get request and be ready to be served with your data while your back-end friend is still waiting for a waiter to serve his/her/their lunch order.
 
 ### Example 2
 
