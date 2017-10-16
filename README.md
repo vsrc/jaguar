@@ -61,7 +61,7 @@ Your back-end developer returned back from lunch. Now, you need to test your web
 
 ## Features
 
-As mentioned before Jaguar server has built-in persistent storage solution which will save all information locally in the same folder where is Jaguar running from. To run Jaguar one should only invoke from command line binary file for his/her/their operating system.
+Jaguar server has built-in persistent storage solution which will save all information locally in the same folder where is Jaguar running from. To run Jaguar one should only invoke from command line binary file for his/her/their operating system.
 
 Once running Jaguar server will start listening on the port defined in conf.json file and will provide following endpoints:
 
