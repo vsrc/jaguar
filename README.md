@@ -49,7 +49,7 @@ But you need urgently implement in your web and mobile app surname as well. Back
 
 ### Example 2
 
-Your back-end developer returned from lunch but he/she/they went now to get a coffee. He/she/they won't be back for at least 45 minutes. You need to test your web/mobile app performance with a large amount of data. Your database has only three records. What will you do?
+Your back-end developer returned back from lunch. Now, you need to test your web/mobile app performance with a large amount of data. Your database has only three records. Database administrator went to get a coffee. He/she/they won’t be back for at least 45 minutes. What will you do?
 
 1. Copy those 3 results
 2. Paste them into your favorite or at least 2nd favorite text editor
