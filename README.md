@@ -2,7 +2,7 @@
 superfast, easy to use mock server
 ------
 
-Have you ever tried to implement front-end feature only to find out that back-end team haven’t implemented it yet? Have you ever tried to test performance of your client side software only to find out your database have only 3 records and your DBA is on vacation for next 14 days?
+Have you ever tried to implement front-end feature only to find out that back-end team hasn't implemented it yet? Have you ever tried to test the performance of your client-side software only to find out your database have only 3 records and your DBA is on vacation for next 14 days?
 
 Meet Jaguar - free and open source (MIT license) mock server with out-of-the-box Create, Read, Update and Delete functionality.
 
@@ -10,7 +10,7 @@ But wait! There is more! If you download now, you will also get:
 
 ## Built-in zero setup database without structure 
 
-Since underlying database is NoSql type of database, there is no need to do any database tables/structure setup. It accepts any data as long as it is in JSON format.
+Since the underlying database is a NoSql type of database, there is no need to do any database tables/structure setup. It accepts any data as long as it is in JSON format.
 
 ## Purpose
 
@@ -27,14 +27,14 @@ This is where Jaguar kicks in.
 
 ### Example 1
 
-Your back-end provides response on endpoint `/hero` like this:
+Your back-end provides a response on endpoint `/hero` like this:
 ```json
 {
   "alias": "Batman",
   "name": "Bruce"
 }
 ```
-But you need urgently implment in your web and mobile app surname as well. Back-end developer left for a lunch and won't be back for at least 2 hours. What will you do?
+But you need urgently implement in your web and mobile app surname as well. Back-end developer left for a lunch and won't be back for at least 2 hours. What will you do?
 
 1. Run jaguar
 2. Do a post request
@@ -45,19 +45,19 @@ But you need urgently implment in your web and mobile app surname as well. Back-
       "surname": "Wayne"
     }
   ```
-3. Do a get request and be ready to be served with your data while your back-end friend is stil waiting waiter to pick up his/her/their lunch order.
+3. Do a get request and be ready to be served with your data while your back-end friend is still waiting for a waiter to pick up his/her/their lunch order.
 
 ### Example 2
 
-Your back-end developer returned from lunch but he/she/they went now to get a coffee. He/she/they won't be back for at least 45 minutes. You need to test your web/mobile app performance with large amount of data. Your database have only three records. What will you do?
+Your back-end developer returned from lunch but he/she/they went now to get a coffee. He/she/they won't be back for at least 45 minutes. You need to test your web/mobile app performance with a large amount of data. Your database has only three records. What will you do?
 
 1. Copy those 3 results
 2. Paste them into your favorite or at least 2nd favorite text editor
-3. Continue pasting until in front of your eyes 3 objects becomes 6, 6 becomes 12, 12 becomes 24...
+3. Continue pasting until in front of your eyes 3 objects become 6, 6 becomes 12, 12 becomes 24...
 4. Once you are happy, copy all objects
 5. Run Jaguar
 6. Do a post request on /bulk endpoint with all your copied objects
-7. Do a get request and be ready to be served with your data while your back-end friend is still explaing to the waiter how to write his/her/their name on a coffee cup
+7. Do a get request and be ready to be served with your data while your back-end friend is still explaining to the waiter how to write his/her/their name on a coffee cup
 
 ## Features
 
@@ -92,10 +92,10 @@ Accepts an array of ids in a payload of the body of the request. For each record
 ## Can I use it for more permanent purposes?
 Like as a backend for a website, blog, or my app? 
 
-Probably yes. But since this project is done in a few hours there is not guarantee how it will behave in more permanent role.
+Probably yes. But since this project is done in a few hours there is no guarantee how it will behave in a more permanent role.
 
 ## Download
-Binary file with latest version compiled for your system can be downloaded from [releases page](https://github.com/vsrc/jaguar/releases)
+Binary file with the latest version compiled for your system can be downloaded from [releases page](https://github.com/vsrc/jaguar/releases)
 
 ## Who is using this project?
 - me
@@ -109,3 +109,8 @@ If you would like to be mentioned here, let me know. :)
 This project is 100% written in golang. It uses two open source packages:
 - [Gin](https://github.com/gin-gonic/gin)
 - [Tiedot](https://github.com/HouzuoGuo/tiedot)
+
+## Code
+As already mentioned above, this project is open sourced under MIT license, so you can easily read and examine the code, borrow, edit, rewrite, use and do whatever you want with it.
+
+Code is consisting of just one `.go` file with under 300 lines of code, 257 lines of code to be precise. It consists of 9 functions. One of those 9 functions is the main bootstrap function, rest are endpoint handlers - 8 functions for 8 endpoints.
