@@ -97,6 +97,8 @@ Probably yes. But since this project is done in a few hours there is no guarante
 ## Download
 Binary file with the latest version compiled for your system can be downloaded from [releases page](https://github.com/vsrc/jaguar/releases)
 
+_Note:_ Your antivirus software might report false positive warning as binary file is not digitally signed. That shouldn't worry you, BUT if you still are uncomfortable to use it, you can download source code and compile it into binary file yourself.
+
 ## Who is using this project?
 - me
 
