@@ -277,5 +277,12 @@ func Get(c *gin.Context) {
 		return true
 	})
 
-	c.JSON(200, rec)
+	// total := col.ApproxDocCount()
+
+	res := map[string]interface{}{
+		"total_count": i,
+		"data":        rec,
+	}
+
+	c.JSON(200, res)
 }
